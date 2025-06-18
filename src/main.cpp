@@ -2,10 +2,10 @@
  * Author: Kyle Bueche
  * File: main.cpp
  * 
- * Simple Hello World
+ * A polynomial symmetrizer
  ******************************************************/
-#include <iostream>
-#include "twotimestwo.h"
+#include <vector>
+#include "polynomial.h"
 
 int main()
 {
