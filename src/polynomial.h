@@ -1,9 +1,10 @@
-/********************************************
+/************************************************
  * Author: Kyle Bueche
  * File: polynomial.h
  *
- * A class for defining polynomials
- *******************************************/
+ * A class for defining polynomials consisting
+ * of monomials of total degree 2.
+ ***********************************************/
 
 #include <vector>
 
@@ -11,15 +12,35 @@
 #define POLYNOMIAL_H
 
 template <typename Real>
-class polynomial
+class Polynomial
 {
-    private:
-        std::vector<std::vector<Real>> coefficients;
     public:
-        void build(std::vector<Real> variableArray);
+        unsigned int nVariables;
+        std::vector<std::vector<Real>> template_D2;
+        std::vector<Real> template_D1;
+        Real template_C;
+        
+        std::vector<std::vector<Real>> coefs_D2;
+        std::vector<Real> coefs_D1;
+        Real coefs_C;
+
+        Polynomial(unsigned int nVars);
+        void setRuleConstant(Real value);
+        void setRuleDegree1(unsigned int variable, Real value);
+        void setRuleDegree2(unsigned int variable1, unsigned int variable2, Real value);
+
+        void p(std::vector<unsigned int> X);
+        void pAdd(std::vector<unsigned int> X);
         Real evaluate(std::vector<Real> variableInstances);
+        void scale(Real value);
+
+        void printRule();
         void printCoefficients();
+        void printFunction();
 };
+
+template <typename Real>
+Polynomial<Real> operator+(Polynomial<Real> a, Polynomial<Real> b);
 
 #endif
 
@@ -93,4 +114,4 @@ class polynomial
  *
  * Step 1:
  *  - Require an infinite sequence of permutations
- *******************************************************************
+ *******************************************************************/

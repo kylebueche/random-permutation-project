@@ -2,11 +2,20 @@
 EXEC_NAME = Main
 SRC_DIR = src
 BUILD_DIR = build
+INCLUDES_DIR = $(SRC_DIR)/includes
 
 # Flags, compiler stuff
-CFLAGS = -Wall -Wextra -std=c++11 -pedantic -MMD -MP
-# Optional: Treat warnings as errors
+# Necessary project flags
+CFLAGS = -MMD -MP -I$(INCLUDES_DIR)
+CFLAGS += -std=c++20
+
+# Windows no cmd line
+CFLAGS += -mwindows
+
+# Extra warnings
+CFLAGS += -Wall -Wextra -pedantic
 # CFLAGS += -Werror
+
 LIBS =
 
 # Obtain all source, object, and dependency files
@@ -23,7 +32,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(BUILD_DIR)
 	g++ -c $< -o $@ $(CFLAGS) $(LIBS)
 
-# Recompile c files if any included files are updated
+# Include dependency files generated from -MMD -MP flags
 -include $(DEPS)
 
 clean:
