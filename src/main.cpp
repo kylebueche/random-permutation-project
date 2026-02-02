@@ -27,7 +27,7 @@ long long factorial(int n)
 
 int main()
 {
-    int nVars = 3;
+    int nVars = 8;
     std::vector<unsigned int> X = std::vector<unsigned int>(nVars);
     for (int i = 0; i < nVars; i++)
     {
@@ -35,12 +35,27 @@ int main()
     }
 
     Polynomial<float> p(nVars);
-    p.setRuleDegree2(0, 0, 4.0f);
-    p.setRuleDegree2(0, 1, 100.0f);
-    p.setRuleDegree2(1, 1, 7.2f);
-    p.setRuleDegree1(0, 3.3f);
-    p.setRuleDegree1(1, 10.0f);
-    p.setRuleConstant(1.0f);
+    // i == j == k
+    p.setRuleDegree3(4, 4, 4, 54620.0f);
+    // i < j < k
+    p.setRuleDegree3(1, 3, 5, -11111732.5f);
+    // i < j == k
+    p.setRuleDegree3(3, 4, 4, -91111123.456f);
+    // i == j < k
+    p.setRuleDegree3(4, 4, 5, 10000000.55593f);
+
+    p.setRuleDegree2(4, 4, -9.0f);
+    p.setRuleDegree2(3, 3, 8.0f);
+    p.setRuleDegree2(2, 2, -1.0f);
+    p.setRuleDegree2(1, 1, 3.0f);
+    p.setRuleDegree2(0, 6, -9.0f);
+    p.setRuleDegree2(1, 6, -1.0f);
+    p.setRuleDegree2(0, 7, -1.0f);
+    p.setRuleDegree2(1, 7, -1.0f);
+    p.setRuleDegree2(2, 4, 1.0f);
+    p.setRuleDegree2(3, 4, 1.0f);
+    p.setRuleDegree2(2, 5, 1.0f);
+    p.setRuleDegree2(3, 5, 1.0f);
     std::sort(X.begin(), X.end());
     p.p(X);
     p.printFunction();

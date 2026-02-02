@@ -7,6 +7,8 @@
  ***********************************************/
 
 #include <vector>
+#include <algorithm>
+#include <iostream>
 
 #ifndef POLYNOMIAL_H
 #define POLYNOMIAL_H
@@ -16,10 +18,12 @@ class Polynomial
 {
     public:
         unsigned int nVariables;
+        std::vector<Real> template_D3;
         std::vector<std::vector<Real>> template_D2;
         std::vector<Real> template_D1;
         Real template_C;
-        
+
+        std::vector<Real> coefs_D3;
         std::vector<std::vector<Real>> coefs_D2;
         std::vector<Real> coefs_D1;
         Real coefs_C;
@@ -28,6 +32,7 @@ class Polynomial
         void setRuleConstant(Real value);
         void setRuleDegree1(unsigned int variable, Real value);
         void setRuleDegree2(unsigned int variable1, unsigned int variable2, Real value);
+        void setRuleDegree3(unsigned int variable1, unsigned int variable2, unsigned int variable3, Real value);
 
         void p(std::vector<unsigned int> X);
         void pAdd(std::vector<unsigned int> X);
@@ -37,6 +42,28 @@ class Polynomial
         void printRule();
         void printCoefficients();
         void printFunction();
+        
+        inline unsigned int index(unsigned int i, unsigned int j) noexcept
+        {
+            static unsigned int new_i, new_j;
+            new_i = std::min(i, j);
+            new_j = std::max(i, j);
+            return new_i * nVariables + new_j;
+        }
+
+        inline unsigned int index(unsigned int i, unsigned int j, unsigned int k) noexcept
+        {
+            static std::vector<unsigned int> indices(3);
+            static unsigned int new_i, new_j, new_k;
+            indices[0] = i;
+            indices[1] = j;
+            indices[2] = k;
+            std::sort(indices.begin(), indices.end());
+            new_i = indices[0];
+            new_j = indices[1];
+            new_k = indices[2];
+            return new_i * nVariables * nVariables + new_j * nVariables + new_k;
+        }
 };
 
 template <typename Real>

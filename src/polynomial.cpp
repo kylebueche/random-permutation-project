@@ -11,16 +11,20 @@
 #include <iostream>
 #include <cmath>
 #include <iomanip>
+#include <algorithm>
+#include <vector>
 
 template <typename Real>
 Polynomial<Real>::Polynomial(unsigned int nVars)
 {
     nVariables = nVars;
+    template_D3 = std::vector<Real>(nVars * nVars * nVars, 0);
     // Create square matrices with n rows and cols, initialized to 0
     template_D2 = std::vector<std::vector<Real>>(nVars, std::vector<Real>(nVars, 0));
     template_D1 = std::vector<Real>(nVars, 0);
     template_C = 0.0;
 
+    coefs_D3 = std::vector<Real>(nVars * nVars * nVars, 0);
     coefs_D2 = std::vector<std::vector<Real>>(nVars, std::vector<Real>(nVars, 0));
     coefs_D1 = std::vector<Real>(nVars, 0);
     coefs_C = 0.0;
@@ -47,25 +51,40 @@ void Polynomial<Real>::setRuleDegree2(unsigned int variable1, unsigned int varia
 }
 
 template <typename Real>
+void Polynomial<Real>::setRuleDegree3(unsigned int variable1, unsigned int variable2, unsigned int variable3, Real value)
+{
+    template_D3[index(variable1, variable2, variable3)] = value;
+}
+
+
+template <typename Real>
 void Polynomial<Real>::p(std::vector<unsigned int> X)
 {
-    unsigned int new_i, new_j;
+    // Total degree 3
+    for (int i = 0; i < nVariables; i++)
+    {
+        for (int j = 0; j <= i; j++)
+        {
+            for (int k = 0; k <= j; k++)
+            {
+                coefs_D3[index(X[i], X[j], X[k])] = template_D3[index(i, j, k)];
+            }
+        }
+    }
+
     // Total degree 2
     for (int i = 0; i < nVariables; i++)
     {
         for (int j = 0; j <= i; j++)
         {
-            new_i = std::max(X[i], X[j]);
-            new_j = std::min(X[i], X[j]);
-            coefs_D2[new_i][new_j] = template_D2[i][j];
+            coefs_D2[X[i]][X[j]] = template_D2[i][j];
         }
     }
 
     // Total degree 1
     for (int i = 0; i < nVariables; i++)
     {
-        new_i = X[i];
-        coefs_D1[new_i] = template_D1[i];
+        coefs_D1[X[i]] = template_D1[i];
     }
 
     // Constant factor
@@ -75,24 +94,31 @@ void Polynomial<Real>::p(std::vector<unsigned int> X)
 template <typename Real>
 void Polynomial<Real>::pAdd(std::vector<unsigned int> X)
 {
-    unsigned int new_i, new_j;
+    // Total degree 3
+    for (int i = 0; i < nVariables; i++)
+    {
+        for (int j = 0; j <= i; j++)
+        {
+            for (int k = 0; k <= j; k++)
+            {
+                coefs_D3[index(X[i], X[j], X[k])] += template_D3[index(i, j, k)];
+            }
+        }
+    }
+
     // Total degree 2
     for (int i = 0; i < nVariables; i++)
     {
         for (int j = 0; j <= i; j++)
         {
-            new_i = std::max(X[i], X[j]);
-            new_j = std::min(X[i], X[j]);
-            
-            coefs_D2[new_i][new_j] += template_D2[i][j];
+            coefs_D2[X[i]][X[j]] += template_D2[i][j];
         }
     }
 
     // Total degree 1
     for (int i = 0; i < nVariables; i++)
     {
-        new_i = X[i];
-        coefs_D1[new_i] += template_D1[i];
+        coefs_D1[X[i]] += template_D1[i];
     }
 
     // Constant factor
@@ -134,6 +160,10 @@ void Polynomial<Real>::scale(Real value)
         for (int j = 0; j <= i; j++)
         {
             coefs_D2[i][j] = value * coefs_D2[i][j];
+            for (int k = 0; k <= j; k++)
+            {
+                coefs_D3[index(i, j, k)] *= value;
+            }
         }
     }
 }
@@ -141,6 +171,37 @@ void Polynomial<Real>::scale(Real value)
 template <typename Real>
 void Polynomial<Real>::printCoefficients()
 {
+    std::cout << std::endl << std::endl;
+    std::cout << "Degree 3 terms:" << std::endl << std::endl;
+    std::cout << "i==j==k:" << std::endl << std::endl;
+    for (int i = 0; i < nVariables; i++)
+        std::cout << std::fixed << std::setprecision(3) << coefs_D3[index(i, i, i)] << " ";
+
+    std::cout << std::endl << std::endl;
+    std::cout << "i<j<k:" << std::endl << std::endl;
+
+    for (int k = 0; k < nVariables; k++)
+        for (int j = 0; j < k; j++)
+            for (int i = 0; i < j; i++)
+                std::cout << std::fixed << std::setprecision(3) << coefs_D3[index(i, j, k)] << " ";
+
+    std::cout << std::endl << std::endl;
+    std::cout << "i<j==k:" << std::endl << std::endl;
+
+    for (int j = 0; j < nVariables; j++)
+        for (int i = 0; i < j; i++)
+            std::cout << std::fixed << std::setprecision(3) << coefs_D3[index(i, j, j)] << " ";
+
+    std::cout << std::endl << std::endl;
+    std::cout << "i==j<k:" << std::endl << std::endl;
+
+    for (int k = 0; k < nVariables; k++)
+        for (int i = 0; i < k; i++)
+            std::cout << std::fixed << std::setprecision(3) << coefs_D3[index(i, i, k)] << " ";
+
+    std::cout << std::endl << std::endl;
+
+    
     std::cout << "Degree 2 terms:" << std::endl;
     std::cout << "     ";
     for (int i = 0; i < nVariables; i++)
