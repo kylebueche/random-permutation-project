@@ -43,7 +43,7 @@ class Polynomial
         void printCoefficients();
         void printFunction();
         
-        inline unsigned int index(unsigned int i, unsigned int j) noexcept
+        inline unsigned int index(unsigned int i, unsigned int j) const noexcept
         {
             static unsigned int new_i, new_j;
             new_i = std::min(i, j);
@@ -51,7 +51,7 @@ class Polynomial
             return new_i * nVariables + new_j;
         }
 
-        inline unsigned int index(unsigned int i, unsigned int j, unsigned int k) noexcept
+        inline unsigned int index(unsigned int i, unsigned int j, unsigned int k) const noexcept
         {
             static std::vector<unsigned int> indices(3);
             static unsigned int new_i, new_j, new_k;
@@ -65,6 +65,21 @@ class Polynomial
             return new_i * nVariables * nVariables + new_j * nVariables + new_k;
         }
 };
+
+template <typename Real>
+Real distance(const Polynomial<Real>& a, const Polynomial<Real>& b)
+{
+    Real sum = 0;
+    for (unsigned int i = 0; i < a.nVariables; i++)
+    {
+        for (unsigned int j = 0; j < a.nVariables; j++)
+        {
+            Real dist = (a.coefs_D2[i][j] - b.coefs_D2[i][j]);
+            sum += dist * dist;
+        }
+    }
+    return sqrt(sum);
+}
 
 template <typename Real>
 Polynomial<Real> operator+(Polynomial<Real> a, Polynomial<Real> b);
