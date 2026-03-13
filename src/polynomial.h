@@ -69,11 +69,15 @@ class Polynomial
 template <typename Real>
 Real distance(const Polynomial<Real>& a, const Polynomial<Real>& b)
 {
+
     Real sum = 0;
     for (unsigned int i = 0; i < a.nVariables; i++)
     {
-        for (unsigned int j = 0; j < a.nVariables; j++)
+        for (unsigned int j = 0; j <= i; j++)
         {
+            // Bug: why are the unused triangular values being set?
+            if (j > i)// && j == 1 && i == 0)
+                std::cout << "a: " << a.coefs_D2[i][j] << " b: " << b.coefs_D2[i][j] << std::endl;
             Real dist = (a.coefs_D2[i][j] - b.coefs_D2[i][j]);
             sum += dist * dist;
         }

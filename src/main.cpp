@@ -75,13 +75,14 @@ int main()
 
     pConverged.scale(1.0f / float(factorial(nVars)));
 
-    for (int i = 0; i < 1000000; i++)
+    for (int i = 0; i < 40320 + 10000; i++)
     {
-        std::shuffle(X.begin(), X.end(), rng);
+        //std::shuffle(X.begin(), X.end(), rng);
+        std::next_permutation(X.begin(), X.end());
         p.pAdd(X);
         Polynomial<float> p2 = p;
         p2.scale(1.0 / float(i));
-            outputFile << distance(p2, pConverged) << '\n';
+            outputFile << i << "," << distance(p2, pConverged) << '\n';
     }
     outputFile.close();
     std::cout << "done!" << std::endl;

@@ -111,7 +111,13 @@ void Polynomial<Real>::pAdd(std::vector<unsigned int> X)
     {
         for (int j = 0; j <= i; j++)
         {
-            coefs_D2[X[i]][X[j]] += template_D2[i][j];
+            int new_i = X[i];
+            int new_j = X[j];
+            if (new_i < new_j)
+            {
+                std::swap(new_i, new_j);
+            }
+            coefs_D2[new_i][new_j] += template_D2[i][j];
         }
     }
 
